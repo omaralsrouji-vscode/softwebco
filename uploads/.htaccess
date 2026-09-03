@@ -1,0 +1,6 @@
+Options -Indexes
+
+# Uploaded media must never execute as application code.
+<FilesMatch "\.(php|phtml|phar|cgi|pl|py|sh)$">
+    Require all denied
+</FilesMatch>
