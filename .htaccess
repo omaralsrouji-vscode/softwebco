@@ -1,0 +1,78 @@
+Options -Indexes
+RewriteEngine On
+
+# Redirect removed Bundles URLs to Programs.
+RewriteRule ^bundles(?:\.php)?/?$ programs [R=301,L,NC]
+
+# Redirect legacy program filenames to the clean public routes.
+RewriteRule ^Our-Programs(?:\.php)?$ programs [R=302,L,NC]
+RewriteRule ^erp-program\.php$ erp-program [R=302,L,NC]
+RewriteRule ^car-rental-program\.php$ car-rental-program [R=302,L,NC]
+RewriteRule ^shoppingstore\.php$ shoppingstore [R=302,L,NC]
+RewriteRule ^ams\.php$ ams [R=302,L,NC]
+RewriteRule ^pms-program\.php$ pms-program [R=302,L,NC]
+RewriteRule ^sms\.php$ sms [R=302,L,NC]
+RewriteRule ^ocr\.php$ OCR [R=302,L,NC]
+RewriteRule ^portfolio-program\.php$ portfolio-program [R=302,L,NC]
+
+# Keep the public Programs URL working even though program modules live in /programs.
+RewriteRule ^programs/?$ programs.php [L,QSA,NC]
+
+# Clean public program routes -> organized program modules.
+RewriteRule ^erp-program/?$ programs/erp.php [L,QSA,NC]
+RewriteRule ^car-rental-program/?$ programs/car-rental.php [L,QSA,NC]
+RewriteRule ^shoppingstore/?$ programs/ecommerce.php [L,QSA,NC]
+RewriteRule ^ams/?$ programs/agent-management.php [L,QSA,NC]
+RewriteRule ^pms-program/?$ programs/project-management.php [L,QSA,NC]
+RewriteRule ^sms/?$ programs/sports-reservation.php [L,QSA,NC]
+RewriteRule ^ocr/?$ programs/ocr.php [L,QSA,NC]
+RewriteRule ^portfolio-program/?$ programs/portfolio.php [L,QSA,NC]
+
+# Redirect direct program PHP paths to their clean public routes.
+RewriteCond %{THE_REQUEST} \s/+[^?\ ]*/programs/erp\.php[?\ ] [NC]
+RewriteRule ^programs/erp\.php$ erp-program [R=302,L,NC]
+RewriteCond %{THE_REQUEST} \s/+[^?\ ]*/programs/car-rental\.php[?\ ] [NC]
+RewriteRule ^programs/car-rental\.php$ car-rental-program [R=302,L,NC]
+RewriteCond %{THE_REQUEST} \s/+[^?\ ]*/programs/ecommerce\.php[?\ ] [NC]
+RewriteRule ^programs/ecommerce\.php$ shoppingstore [R=302,L,NC]
+RewriteCond %{THE_REQUEST} \s/+[^?\ ]*/programs/agent-management\.php[?\ ] [NC]
+RewriteRule ^programs/agent-management\.php$ ams [R=302,L,NC]
+RewriteCond %{THE_REQUEST} \s/+[^?\ ]*/programs/project-management\.php[?\ ] [NC]
+RewriteRule ^programs/project-management\.php$ pms-program [R=302,L,NC]
+RewriteCond %{THE_REQUEST} \s/+[^?\ ]*/programs/sports-reservation\.php[?\ ] [NC]
+RewriteRule ^programs/sports-reservation\.php$ sms [R=302,L,NC]
+RewriteCond %{THE_REQUEST} \s/+[^?\ ]*/programs/ocr\.php[?\ ] [NC]
+RewriteRule ^programs/ocr\.php$ OCR [R=302,L,NC]
+RewriteCond %{THE_REQUEST} \s/+[^?\ ]*/programs/portfolio\.php[?\ ] [NC]
+RewriteRule ^programs/portfolio\.php$ portfolio-program [R=302,L,NC]
+
+# Protect configuration, installer data, dependencies and internal catalogs.
+RewriteRule ^(?:database|vendor)(?:/|$) - [F,L,NC]
+RewriteRule ^(?:\.env(?:\..*)?|README\.md|CHANGELOG\.md|SECURITY\.md|CONTRIBUTING\.md|THIRD_PARTY_NOTICES\.md|VERSION|mail-config\.php|config\.php)$ - [F,L,NC]
+RewriteRule ^programs/(?:catalog|template)\.php$ - [F,L,NC]
+RewriteRule ^portfolio/catalog\.php$ - [F,L,NC]
+
+# Clean extensionless PHP routes.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+?)/?$ $1.php [L]
+
+# Clean extensionless HTML routes.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType text/css "access plus 7 days"
+    ExpiresByType application/javascript "access plus 7 days"
+</IfModule>
